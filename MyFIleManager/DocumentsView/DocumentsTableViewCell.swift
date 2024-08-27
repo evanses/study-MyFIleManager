@@ -1,5 +1,5 @@
 //
-//  TableViewCell.swift
+//  DocumentsTableViewCell.swift
 //  MyFIleManager
 //
 //  Created by eva on 20.08.2024.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TableViewCell: UITableViewCell {
+class DocumentsTableViewCell: UITableViewCell {
     
     // MARK: - Data
     
@@ -23,6 +23,7 @@ class TableViewCell: UITableViewCell {
         
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .black
+        label.font = UIFont.systemFont(ofSize: 16)
         
         return label
     }()
