@@ -20,9 +20,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let window = UIWindow(windowScene: scene)
         
-        let fileManagerService = FileManagerService(path: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
+        let model = LoginViewModel()
         
-        let rootViewController = RootViewController(fileManageService: fileManagerService)
+        let rootViewController = LoginViewController(model: model)
         
         let rootNavigationController = UINavigationController(rootViewController: rootViewController)
         

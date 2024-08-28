@@ -32,7 +32,15 @@ struct FileManagerService: FileManagerServiceProtocol {
     }
     
     func contentsOfDirectory() -> [String] {
-        (try? FileManager.default.contentsOfDirectory(atPath: path)) ?? []
+        var list: [String] = (try? FileManager.default.contentsOfDirectory(atPath: path)) ?? []
+        
+        if SettingsStore.store.getSortMode() == 0 {
+            list = list.sorted{ $0 < $1 }
+        } else {
+            list = list.sorted{ $0 > $1 }
+        }
+        
+        return list
     }
     
     func createDirectory(title: String) {

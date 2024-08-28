@@ -1,5 +1,5 @@
 //
-//  RootViewController.swift
+//  DocumentsViewController.swift
 //  MyFIleManager
 //
 //  Created by eva on 20.08.2024.
@@ -7,13 +7,17 @@
 
 import UIKit
 
-class RootViewController: UIViewController {
+protocol DocumentsViewControllerDelegate {
+    func reloadTableView()
+}
+
+class DocumentsViewController: UIViewController {
     
     // MARK: - Data
     
     var fileManageService: FileManagerServiceProtocol
     
-    private enum TableViewCellReuseID: String {
+    private enum DocumentsTableViewCellReuseID: String {
         case header = "HeaderTableViewCellReuseID_ReuseID"
         case main = "MainTableViewCellReuseID_ReuseID"
     }
@@ -76,13 +80,13 @@ class RootViewController: UIViewController {
         }
         
         tableView.register(
-            TableViewCell.self,
-            forCellReuseIdentifier: TableViewCellReuseID.main.rawValue
+            DocumentsTableViewCell.self,
+            forCellReuseIdentifier: DocumentsTableViewCellReuseID.main.rawValue
         )
         
         tableView.register(
-            TableViewCell.self,
-            forCellReuseIdentifier: TableViewCellReuseID.header.rawValue
+            DocumentsTableViewCell.self,
+            forCellReuseIdentifier: DocumentsTableViewCellReuseID.header.rawValue
         )
         
         tableView.dataSource = self
@@ -145,9 +149,19 @@ class RootViewController: UIViewController {
 
 }
 
+// MARK: - DocumentsViewControllerDelegate
+
+extension DocumentsViewController: DocumentsViewControllerDelegate {
+    
+    func reloadTableView() {
+        tableView.reloadData()
+    }
+    
+}
+
 // MARK: - UITableViewDataSource
 
-extension RootViewController: UITableViewDataSource {
+extension DocumentsViewController: UITableViewDataSource {
     func numberOfSections(
         in tableView: UITableView
     ) -> Int {
@@ -158,9 +172,9 @@ extension RootViewController: UITableViewDataSource {
         
         if indexPath.section == 0 {
             guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: TableViewCellReuseID.main.rawValue,
+                withIdentifier: DocumentsTableViewCellReuseID.header.rawValue,
                 for: indexPath
-            ) as? TableViewCell else {
+            ) as? DocumentsTableViewCell else {
                 fatalError("could not dequeueReusableCell")
             }
             
@@ -170,9 +184,9 @@ extension RootViewController: UITableViewDataSource {
         }
         
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: TableViewCellReuseID.main.rawValue,
+            withIdentifier: DocumentsTableViewCellReuseID.main.rawValue,
             for: indexPath
-        ) as? TableViewCell else {
+        ) as? DocumentsTableViewCell else {
             fatalError("could not dequeueReusableCell")
         }
         
@@ -207,7 +221,7 @@ extension RootViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate
 
-extension RootViewController: UITableViewDelegate {
+extension DocumentsViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -216,7 +230,7 @@ extension RootViewController: UITableViewDelegate {
             
             if fileManageService.isFolder(index: indexPath.row) {
                 let nextFileManager = FileManagerService(path: fileManageService.path + "/" + item)
-                let nextViewController = RootViewController(fileManageService: nextFileManager)
+                let nextViewController = DocumentsViewController(fileManageService: nextFileManager)
                 
                 navigationController?.pushViewController(nextViewController, animated: true)
             }
@@ -226,7 +240,7 @@ extension RootViewController: UITableViewDelegate {
 
 // MARK: - UIImagePickerControllerDelegate, UINavigationControllerDelegate
 
-extension RootViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension DocumentsViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
